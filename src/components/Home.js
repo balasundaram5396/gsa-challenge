@@ -34,14 +34,29 @@ constructor(props) {
     //console.log('1')
     formData.append("file", file);
     //console.log('2')
-    axios
-      .post("/api/upload", formData)
-      .then(res => console.log(res))
-      .catch(err => console.warn(err));
-  
+console.log('1')
+
+
+    formData.append("file", file);
+
+console.log(formData)
+axios({
+  url: 'http://ec2-3-237-1-21.compute-1.amazonaws.com:5000/analysis',
+  method: 'POST',
+  data: formData,
+  headers: {
+      'Content-Type': 'text/file'
+  }
+}).then((response) => {
+ console.log('Uploaded')
+}).catch((error) => {
+  console.log('error')
+  //setResponse("error");
+})
+ 
       alert('File uploaded successfully')
      // console.log(files)
-     this.props.history.push('/result')
+     //this.props.history.push('/result')
        //history.push("/result");
     }
 
@@ -66,11 +81,3 @@ constructor(props) {
 }
 
 export default Home
-
-
-//backend code
-// @app.route('/api/upload', methods = ['POST'])
-// def upload_file():
-//     file = request.files['file']
-//     print(file)
-//     return "done"
