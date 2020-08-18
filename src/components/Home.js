@@ -6,7 +6,7 @@ import { ClauseContext } from "../context/Context";
 import { SET_CLAUSE } from "../context/action.types";
 import { render } from '@testing-library/react';
 //import firebase from "firebase/app";
-
+import Result from './Result'
 
 class Home extends React.Component{
 
@@ -18,46 +18,51 @@ constructor(props) {
   super(props);
   this.state = {
     files: [],
+    res:{
+    //   "results": [
+    //     {
+    //         "result": "acceptable",
+    //         "score": "0.9578069",
+    //         "text": "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    //     },
+    //     {
+    //         "result": "acceptable",
+    //         "score": "0.9578069",
+    //         "text": "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    //     }
+    // ]
+    }
   };
 }
 
 
-    uploadFile=(e)=> {
+    uploadFile=async (e)=> {
     e.preventDefault();
-    //console.log('110')
-    console.log(this.state.files)
     let file = this.state.files;
     //console.log('111')
-    console.log(file)
-    console.log(this.state.files)
+    //console.log(this.state.files)
     const formData = new FormData();
-    //console.log('1')
-    formData.append("file", file);
-    //console.log('2')
-console.log('1')
-
-
-    formData.append("file", file);
-
-console.log(formData)
-axios({
+     formData.append("file", file);
+  //console.log(formData)
+   await axios({
   url: 'http://ec2-3-237-1-21.compute-1.amazonaws.com:5000/analysis',
   method: 'POST',
   data: formData,
   headers: {
       'Content-Type': 'text/file'
   }
-}).then((response) => {
- console.log('Uploaded')
-}).catch((error) => {
-  console.log('error')
-  //setResponse("error");
-})
- 
-      alert('File uploaded successfully')
-     // console.log(files)
-     //this.props.history.push('/result')
-       //history.push("/result");
+  }).then((response) => {
+  this.setState({ res: response.data}, () => { console.log('Fetching response') });
+  }).then( console.log('Uploaded')).catch((error) => {
+      console.log('error')
+      //setResponse("error");
+    })
+    alert('File uploaded successfully')
+    // //this.props.history.push('/result')
+    await this.props.history.push({
+      pathname: '/result',
+      state: { detail: this.state.res.results }
+    })
     }
 
      onFileChange = event => { 
@@ -74,7 +79,8 @@ axios({
             </div> 
                 <Button variant="contained" color="primary" onClick={this.uploadFile}> 
                   Submit
-                </Button>                
+                </Button>  
+                         
         </div>
     )
 }
