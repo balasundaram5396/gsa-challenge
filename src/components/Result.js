@@ -21,6 +21,7 @@ const useStyles = makeStyles({
 
 
 function Result() {
+ 
   //const { state } = useContext(ClauseContext);
   // destructuring drug from the state
   // and rendering it in state

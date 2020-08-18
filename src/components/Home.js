@@ -1,77 +1,76 @@
 import React,{useState,useContext} from 'react'
 import {Button} from '@material-ui/core'
 import axios from 'axios'; 
-import { useHistory } from "react-router-dom";
+import { withRouter } from 'react-router-dom';
 import { ClauseContext } from "../context/Context";
 import { SET_CLAUSE } from "../context/action.types";
+import { render } from '@testing-library/react';
 //import firebase from "firebase/app";
 
 
-function Home() {
+class Home extends React.Component{
 
-const[selectedFile,setSelectedFile]=useState(null)
-const { state,dispatch} = useContext(ClauseContext);
-const { SET_CLAUSE }=state;
+//const[selectedFile,setSelectedFile]=useState([])
+//const { state,dispatch} = useContext(ClauseContext);
+//const { SET_CLAUSE }=state;
 
-  const history=useHistory()
+constructor(props) {
+  super(props);
+  this.state = {
+    files: [],
+  };
+}
 
-   const onFileUpload=()=>{
-    // dispatch({
-    //   type: SET_CLAUSE,
-    //   payload: null,
-    //   key: null
-    // });
-      // const formData = new FormData(); 
-     
-      // // Update the formData object 
-    
-      // // Details of the uploaded file 
-      // console.log(selectedFile); 
-      // //history.push("/result");
-      // // Request made to the backend api 
-      // // Send formData object 
-      // axios.post("api/uploadfile", formData); 
+
+    uploadFile=(e)=> {
+    e.preventDefault();
+    //console.log('110')
+    console.log(this.state.files)
+    let file = this.state.files;
+    //console.log('111')
+    console.log(file)
+    console.log(this.state.files)
+    const formData = new FormData();
+    //console.log('1')
+    formData.append("file", file);
+    //console.log('2')
+    axios
+      .post("/api/upload", formData)
+      .then(res => console.log(res))
+      .catch(err => console.warn(err));
+  
       alert('File uploaded successfully')
-       history.push("/result");
+     // console.log(files)
+     this.props.history.push('/result')
+       //history.push("/result");
     }
 
-    const onFileChange = event => { 
-     
-      // Update the state 
-      setSelectedFile({ selectedFile: event.target.files[0] }); 
-     
-    }; 
+     onFileChange = event => { 
+      let files = event.target.files;
+    this.setState({ files: files[0] }, () => { console.log(this.state.files) });
+    }
 
-    const fileData = () => { 
-     
-      if (selectedFile) { 
-          
-        return ( 
-          <div> 
-            <h2>File Details:</h2> 
-            <p>File Name: {selectedFile.size}</p> 
-          </div> 
-        ); 
-      } else { 
-        return ( 
-          <div> 
-            <br /> 
-            <h6>Choose before Pressing the Upload button</h6> 
-          </div> 
-        ); 
-      } 
-    }; 
+    render(){
     return (
         <div>
             <h3>File upload</h3>
             <div style={{margin:'50px'}}> 
-                <input type="file"  onChange={onFileChange} /> 
+                <input type="file"  onChange={this.onFileChange} /> 
             </div> 
-                <Button variant="contained" color="primary" onClick={onFileUpload}> 
+                <Button variant="contained" color="primary" onClick={this.uploadFile}> 
                   Submit
                 </Button>                
         </div>
     )
 }
+}
 
 export default Home
+
+
+//backend code
+// @app.route('/api/upload', methods = ['POST'])
+// def upload_file():
+//     file = request.files['file']
+//     print(file)
+//     return "done"
