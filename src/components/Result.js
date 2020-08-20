@@ -63,7 +63,7 @@ class Result extends React.Component {
         {
           title: "Prediction",
           field: "result",
-          lookup: { problematic: "Unacceptable", acceptable: "Acceptable" },
+          lookup: { problematic: "Problematic", acceptable: "Acceptable" },
         },
         {
           title: "Confidence",
