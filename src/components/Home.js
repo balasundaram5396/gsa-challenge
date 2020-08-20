@@ -1,6 +1,8 @@
 import React, { useState, useContext } from "react";
 import { Button } from "@material-ui/core";
 import axios from "axios";
+import { makeStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
 import { withRouter } from "react-router-dom";
 import { ClauseContext } from "../context/Context";
 import { SET_CLAUSE } from "../context/action.types";
@@ -17,28 +19,15 @@ class Home extends React.Component {
     super(props);
     this.state = {
       files: [],
-      res: {
-        //   "results": [
-        //     {
-        //         "result": "acceptable",
-        //         "score": "0.9578069",
-        //         "text": "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        //     },
-        //     {
-        //         "result": "acceptable",
-        //         "score": "0.9578069",
-        //         "text": "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        //     }
-        // ]
-      },
+      res: {  },
       buttonName: "Submit",
       fileSelect: false,
     };
   }
-
+    
   uploadFile = async (e) => {
     e.preventDefault();
-    this.setState({ fileSelect: false, buttonName: "Uploading..." });
+    this.setState({ fileSelect: false, buttonName: "Fetching the result..." });
     let file = this.state.files;
     //console.log('111')
     //console.log(this.state.files)
@@ -63,7 +52,7 @@ class Home extends React.Component {
         console.log("error");
         //setResponse("error");
       });
-    alert("File uploaded successfully");
+    //alert("File uploaded successfully");
     // //this.props.history.push('/result')
     await this.props.history.push({
       pathname: "/result",
@@ -80,15 +69,37 @@ class Home extends React.Component {
 
   render() {
     return (
-      <div>
-        <h3>File upload</h3>
-        <div style={{ margin: "50px" }}>
-          <input type="file" onChange={this.onFileChange} />
-        </div>
-        <Button
+      <div className='container'>
+           
+            <img src={ require('../images/precise.png')} width="100" height="100" style={{marginTop:'10px'}} alt='' />
+            <img src={ require('../images/gsa.png')} width="100" height="100" style={{marginTop:'10px'}} alt='' />
+            <h4 style={{margin:'40px'}}><b>GSA EULA ANALYSIS TOOL</b></h4>
+            {/* <div style={{align:'center',
+             height: 350,
+    width: 1200,
+    display: "block",
+    overflow: "auto",
+    border:'3px solid gray',
+    backgroundColor:'aliceblue',
+    borderRadius:'50px'}}>
+            */}
+            <Card className='container' style={{minWidth: '275', height: 300,
+    width: 1000,
+    display: "block",
+    overflow: "auto",backgroundColor:'aliceblue'}}>
+            <div style={{margin:'50px',border:'20px',marginBottom:'20px'}}> 
+            <p><b>UPLOAD A EULA FILE AND CLICK THE SUBMIT BUTTON TO VIEW THE RESULTS</b></p>
+                <input type="file"  onChange={this.onFileChange} style={{margin:'40px',marginLeft:'120px',marginBottom:'10px'}} /> 
+                <p>*Accepted file formats- Word (.docx) or PDF (.pdf)</p>
+                <hr/>
+            </div> 
+            {/* {
+            this.state.fileSelect !== false
+              ?  */}
+              <Button style={{maxWidth: '300px', maxHeight: '50px', minWidth: '300px', minHeight: '50px'}}
           variant="contained"
           color="primary"
-          onClick={this.uploadFile}
+          onClick={this.uploadFile} 
           disabled={
             this.state.files === undefined || this.state.fileSelect === false
               ? true
@@ -97,7 +108,9 @@ class Home extends React.Component {
         >
           {this.state.buttonName}
         </Button>
-      </div>
+              
+        </Card>
+        </div>
     );
   }
 }

@@ -29,7 +29,11 @@ const tableIcons = {
     <ChevronRight {...props} ref={ref} />
   )),
   Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+  Export: forwardRef((props, ref) => (
+    <Button variant="contained" color="primary">
+      Download
+    </Button>
+  )),
   Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
   FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
   LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
@@ -53,12 +57,13 @@ class Result extends React.Component {
           title: "Clause",
           field: "text",
           editable: "never",
+          render: (rowData) => rowData.text.substr(0, 40) + "...",
         },
 
         {
           title: "Prediction",
           field: "result",
-          lookup: { unacceptable: "Unacceptable", acceptable: "Acceptable" },
+          lookup: { problematic: "Unacceptable", acceptable: "Acceptable" },
         },
         {
           title: "Confidence",
@@ -96,15 +101,21 @@ class Result extends React.Component {
       .then((res) => {
         console.log(res);
         console.log(res.data);
-        console.log(data);
       })
-      .then(console.log("Uploaded"))
+      .then((res) => {
+        console.log("Uploaded");
+      })
       .catch((error) => {
         console.log("Error");
       });
     alert("Changes Saved");
 
-    this.setState({ cannotEdit: true, retrainData: [] });
+    this.setState({
+      cannotEdit: true,
+      retrainData: [],
+      editOrSave: "Edit",
+      backOrCancel: "Back",
+    });
   };
 
   render() {
@@ -116,11 +127,15 @@ class Result extends React.Component {
           style={{ margin: "100px", marginTop: "50px", marginBottom: "50px" }}
         >
           <MaterialTable
+            options={{
+              exportButton: true,
+              searchFieldVariant: "outlined",
+              searchFieldStyle: { height: 47 },
+            }}
             icons={tableIcons}
             title="Results"
             columns={this.state.columns}
             data={this.state.data}
-            options={{ rowStyle: { maxHeight: 10 } }}
             editable={{
               isEditHidden: (rowData) => this.state.cannotEdit,
               onRowUpdate: (newData, oldData) =>
@@ -161,11 +176,19 @@ class Result extends React.Component {
         <div>
           <Button
             variant="contained"
-            style={{ marginRight: "70px", marginBottom: "50px" }}
+            style={{
+              alignItems: "center",
+              justifyItems: "center",
+              marginRight: 50,
+            }}
             color={this.state.cannotEdit === false ? "primary" : ""}
             onClick={() => {
               this.state.cannotEdit === false
-                ? this.setState({ cannotEdit: true, backOrCancel: "Back" })
+                ? this.setState({
+                    cannotEdit: true,
+                    backOrCancel: "Back",
+                    editOrSave: "Edit",
+                  })
                 : this.props.history.push("/");
             }}
           >
@@ -173,25 +196,10 @@ class Result extends React.Component {
           </Button>
           <Button
             variant="contained"
-            color="primary"
             style={{
-              marginLeft: "70px",
-              marginRight: "70px",
-              marginBottom: "50px",
-            }}
-            onClick={() => {
-              alert("Button pressed");
-            }}
-            disabled={this.state.cannotEdit === true ? false : true}
-          >
-            Download
-          </Button>
-          <Button
-            variant="contained"
-            style={{
-              marginLeft: "70px",
-              marginRight: "70px",
-              marginBottom: "50px",
+              alignItems: "center",
+              justifyItems: "center",
+              marginLeft: 50,
             }}
             color="secondary"
             onClick={
